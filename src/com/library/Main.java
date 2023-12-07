@@ -17,6 +17,10 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
+        System.out.println("-----Scanner-----");
+
+
+
         System.out.println("-----Books------");
         Book magazine1 = new Magazine(1,"men's health", "JJ");
         Book magazine11 = new Magazine(7,"men's health", "JJ");

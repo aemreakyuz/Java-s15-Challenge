@@ -8,8 +8,9 @@ public class Magazine extends Book{
 
     public Magazine(long id, String name, String author) {
         super(id, name, author,  price, Category.MAGAZINE);
-
     }
+
+
 
 }
 
