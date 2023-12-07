@@ -2,6 +2,7 @@ package com.library.books;
 
 import com.library.books.enums.BookStatus;
 import com.library.books.enums.Category;
+import com.library.model.Library;
 import com.library.readers.Reader;
 
 public abstract class Book  {
@@ -13,6 +14,7 @@ public abstract class Book  {
     private double price;
     private Category category;
     private Reader reader ;
+    private Library library;
 
 
     public Book(long id, String name, String author, double price, Category category) {
@@ -23,10 +25,15 @@ public abstract class Book  {
         this.bookStatus = BookStatus.AVAILABLE;
         this.category = category;
         this.reader = null;
+        this.library = library;
     }
 
     public double getPrice() {
         return price;
+    }
+
+    public Library getLibrary() {
+        return library;
     }
 
     public String getAuthor() {
@@ -85,6 +92,8 @@ public abstract class Book  {
     public void setBookStatus(BookStatus bookStatus) {
         this.bookStatus = bookStatus;
     }
+
+
 
     public String toString() {
         return "Book{" +

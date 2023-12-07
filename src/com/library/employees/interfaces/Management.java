@@ -10,5 +10,5 @@ public interface Management {
     void removeBookById(int bookId);
     void assistPurchase(Reader reader ,Book book);
     void assistReturn(Reader reader , Book book);
-    List<Book> searchBook(String title);
+
 }

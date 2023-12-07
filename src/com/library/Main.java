@@ -55,9 +55,21 @@ public class Main {
 
         System.out.println("-----Librarian-------");
         Librarian librarian = new Librarian(library);
-        librarian.searchBook("men's health");
-        librarian.addBook(new Magazine(1, "emre", "emre"));
+
+        System.out.println("------add/removeBook-----");
+        librarian.addBook(new Magazine (1, "emre", "emre"));
+
+
+        System.out.println("------purchase/returnBook------");
+        librarian.assistPurchase(reader1, magazine2);
         librarian.assistPurchase(reader1, magazine1);
         System.out.println(readers);
+
+        System.out.println("------displayBooks-----");
+        librarian.displayBookByAuthor("JJ");
+        librarian.displayBookByTitle("NUTUK");
+        librarian.displayBookById(2);
+        librarian.displayBooksByCategory();
+
     }
 }

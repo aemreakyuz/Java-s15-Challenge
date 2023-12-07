@@ -10,5 +10,6 @@ public class Magazine extends Book{
         super(id, name, author,  price, Category.MAGAZINE);
 
     }
+
 }
 

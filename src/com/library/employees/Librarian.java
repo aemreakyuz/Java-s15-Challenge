@@ -10,6 +10,7 @@ import com.library.readers.Reader;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Scanner;
 
 public class Librarian extends Employee implements Management {
 
@@ -44,18 +45,7 @@ public class Librarian extends Employee implements Management {
             System.out.println("Book with ID " + bookId + " could not be found");
         }
     }
-    public List<Book> searchBook(String title) {
-        List<Book> foundBooks = getLibrary().searchBooksByTitle(title);
-        if (foundBooks.isEmpty()) {
-            System.out.println("No books found with title: " + title);
-            return null;
-        } else {
-            for (Book book : foundBooks) {
-                System.out.println("Found Books: " + book);
-            }
-            return foundBooks;
-        }
-    }
+
 
 
     public Invoice createInvoice(Book book, Reader reader) {
@@ -121,6 +111,79 @@ public class Librarian extends Employee implements Management {
             book.setReader(reader);
         }
     }
+    public void displayBookById(long id) {
+        boolean found = false;
+        for(Book book : getLibrary().getBooks()) {
+            if(book.getId()==(id)) {
+                System.out.println(book);
+                found = true;
+            }
+        }
+
+        if (!found) {
+            System.out.println("No book found for Id: " + id);
+        }
+    }
+
+    public void displayBookByTitle(String title) {
+        boolean found = false;
+        for(Book book : getLibrary().getBooks()) {
+            if(book.getAuthor().equalsIgnoreCase(title)) {
+                System.out.println(book);
+                found = true;
+            }
+        }
+
+        if (!found) {
+            System.out.println("No book found for Title: " + title);
+        }
+    }
+
+    public void displayBookByAuthor(String author) {
+        boolean found = false;
+        for(Book book : getLibrary().getBooks()) {
+            if(book.getAuthor().equalsIgnoreCase(author)) {
+                System.out.println(book);
+                found = true;
+            }
+        }
+
+        if (!found) {
+            System.out.println("No book found for Author: " + author);
+        }
+    }
+
+    public void displayBooksByCategory(){
+        Category category;
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Please Select Category:  1: StudyBooks, 2: AudioBooks, 3: Mystery, 4: Magazine ");
+        String input = scanner.nextLine();
+        switch(input){
+            case "1" :
+                category = Category.STUDY_BOOK;
+                break;
+            case "2"  :
+                category = Category.AUDIO_BOOK;
+            case "3" :
+                category = Category.MYSTERY;
+            case "4" :
+                category = Category.MAGAZINE;
+            default:
+                System.out.println("Invalid category");
+                return;
+        }
+        boolean found = false;
+        for(Book book: getLibrary().getBooks()){
+            if(book.getCategory().equals(category)){
+                System.out.println(book);
+                found =true;
+            }
+        }
+        if(!found){
+            System.out.println("No books found in Category");
+        }
+    }
+
 
 
 
