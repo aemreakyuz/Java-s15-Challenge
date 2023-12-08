@@ -2,31 +2,34 @@ package com.library.books;
 
 import com.library.books.enums.BookStatus;
 import com.library.books.enums.Category;
-import com.library.model.Library;
-import com.library.readers.Reader;
+import com.library.services.Library;
+import com.library.users.Member;
 
 public abstract class Book  {
 
-    private long id;
+    private static long currentId = 0;
+    private long bookId;
     private String name;
     private String author;
     private BookStatus bookStatus;
     private double price;
     private Category category;
-    private Reader reader ;
+    private Member member;
     private Library library;
 
 
-    public Book(long id, String name, String author, double price, Category category) {
-        this.id = id;
+    public Book( String name, String author, Category category) {
+        this.bookId = currentId++;
         this.name = name;
         this.author = author;
-        this.price = price;
+        this.price = setPrice();
         this.bookStatus = BookStatus.AVAILABLE;
         this.category = category;
-        this.reader = null;
+        this.member = null;
         this.library = library;
     }
+
+   protected abstract double setPrice();
 
     public double getPrice() {
         return price;
@@ -40,40 +43,38 @@ public abstract class Book  {
         return author;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
     public void setAuthor(String author) {
         this.author = author;
     }
 
-    public Reader getReader() {
-        return reader;
+    public Member getReader() {
+        return member;
     }
 
-    public void setReader(Reader reader) {
-        this.reader = reader;
+    public void setReader(Member member) {
+        this.member = member;
     }
 
     public Category getCategory() {
         return category;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
-    }
+
 
     public void setCategory(Category category) {
         this.category = category;
     }
 
-    public long getId() {
-        return id;
+    public static long getCurrentId() {
+        return currentId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public long getBookId() {
+        return bookId;
+    }
+
+    public Member getMember() {
+        return member;
     }
 
     public String getName() {
@@ -93,17 +94,16 @@ public abstract class Book  {
         this.bookStatus = bookStatus;
     }
 
-
-
+    @Override
     public String toString() {
         return "Book{" +
-                "id=" + id +
+                "id=" + bookId +
                 ", name='" + name + '\'' +
                 ", author='" + author + '\'' +
                 ", bookStatus=" + bookStatus +
                 ", price=" + price +
                 ", category=" + category +
-                ", reader=" + reader +
+                ", reader=" + member +
                 '}';
     }
 }

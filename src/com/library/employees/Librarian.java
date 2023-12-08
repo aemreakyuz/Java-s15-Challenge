@@ -3,30 +3,27 @@ package com.library.employees;
 import com.library.books.Book;
 import com.library.books.enums.BookStatus;
 import com.library.books.enums.Category;
-import com.library.employees.interfaces.Management;
-import com.library.financial.Invoice;
-import com.library.model.Library;
-import com.library.readers.Reader;
 
-import java.time.LocalDate;
-import java.util.List;
+import com.library.employees.interfaces.Searching;
+import com.library.services.Library;
+import com.library.users.Member;
+
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Scanner;
 
-public class Librarian extends Employee implements Management {
+public class Librarian extends Employee implements Searching {
 
-    public Librarian(String name, int password) {
-        super(name, password);
+
+    public Librarian(String name, Library library) {
+        super(name, library);
     }
 
-    public Librarian(Library library) {
-        super(library);
-    }
-
-    public void showStatus(Book book){
+    public void showStatus(Book book) {
         System.out.println(book.getBookStatus());
     }
 
-    public void showReader (Book book){
+    public void showReader(Book book) {
         System.out.println(book.getReader());
     }
 
@@ -35,156 +32,105 @@ public class Librarian extends Employee implements Management {
         System.out.println(book + " is added.");
     }
 
-    public void removeBookById(int bookId) {
-        Book book = getLibrary().getBookByID(bookId);
-        if(getLibrary().getBooks().contains(book)){
-            getLibrary().getBooks().remove(book);
+    public void removeBookById(long bookId, Library library) {
+        Book book = library.getBooks().get(bookId);
+        if (book != null) {
+            library.getBooks().remove(bookId);
             System.out.println(book + " is removed.");
-        }
-        else {
+        } else {
             System.out.println("Book with ID " + bookId + " could not be found");
         }
     }
 
-
-
-    public Invoice createInvoice(Book book, Reader reader) {
-        if (book.getBookStatus().equals(BookStatus.AVAILABLE) && reader.getPurchasedBooks().size() < 5) {
-            LocalDate issueDate = LocalDate.now();
-            LocalDate dueDate = issueDate.plusDays(14);
-            double price = book.getPrice();
-            Invoice invoice = new Invoice(book, reader, issueDate, dueDate, price);
-            getLibrary().getInvoices().add(invoice);
-            return invoice;
-        }
-        return null;
-    }
-
-    public Invoice getInvoice(Book book, Reader reader){
-        for(Invoice invoice : getLibrary().getInvoices()){
-            if(invoice.getReader().equals(reader.getName())){
-                System.out.println(invoice);
-                return invoice;
-            }
-        }
-        return null;
-    }
-
-    public void assistPurchase(Reader reader, Book book) {
-        if(reader.getPurchasedBooks().size()>5){
-            System.out.println("You cannot purchase any books. Please return at least one");
-        }
-        if(reader.getPurchasedBooks().contains(book)){
-            System.out.println("You already rented this book");
-        }
-        if(getLibrary().getBooks().contains(book) && (book.getBookStatus().equals(BookStatus.RENTED)) && reader.getPurchasedBooks().size()<5){
-            book.setBookStatus(BookStatus.RENTED);
-            book.setReader(reader);
-            Invoice invoice = createInvoice(book, reader);
-            reader.getPurchasedBooks().add(book);
-            getLibrary().getReaders().add(reader);
-            System.out.println(book + " is rented for " + book.getPrice() + " dollars" + " Invoice: " + invoice);
-        }
-        else{
-            System.out.println(book + " is not in the library.");
-        }
-    }
-
-    public void assistReturn(Reader reader, Book book) {
-        if(book.getReader() == reader) {
-            book.setBookStatus(BookStatus.AVAILABLE);
-            System.out.println(book.getName() + " has been returned by " + book.getReader());
-            book.setReader(null);
-        }
-        else {
-            System.out.println("This book was not borrowed by this reader.");
-        }
-    }
-
-    public void editBook(Book book, String name, String author, BookStatus bookStatus, double price, Category category, Reader reader){
-        if (getLibrary().getBooks().contains(book)) {
+    public void editBook(Book book, String name, String author, BookStatus bookStatus, Category category, Member member) {
+        {
             book.setName(name);
             book.setAuthor(author);
             book.setBookStatus(bookStatus);
-            book.setPrice(price);
+
             book.setCategory(category);
-            book.setReader(reader);
+            book.setReader(member);
         }
     }
-    public void displayBookById(long id) {
-        boolean found = false;
-        for(Book book : getLibrary().getBooks()) {
-            if(book.getId()==(id)) {
+
+    public void displayBooks(Library library) {
+        HashMap<Long, Book> books = library.getBooks();
+        if (books.isEmpty()) {
+            System.out.println("No books available.");
+        } else {
+            System.out.println(books);
+        }
+    }
+
+    public void displayBookById(long id, Library library) {
+        boolean isFound = false;
+        Book book = library.getBooks().get(id);
+        if (book != null) {
+            System.out.println(book);
+            isFound = true;
+        }
+        if (!isFound) {
+            System.out.println("Given id " + id + " is not found");
+        }
+
+    }
+
+    public void displayBookByTitle(String title, Library library) {
+        boolean isFound = false;
+
+        Collection<Book> books = library.getBooks().values();
+        for (Book book : books) {
+            if (book.getName().equalsIgnoreCase(title)) {
                 System.out.println(book);
-                found = true;
+                isFound = true;
             }
         }
 
-        if (!found) {
-            System.out.println("No book found for Id: " + id);
+        if (!isFound) {
+            System.out.println("Given Title " + title + " is not found");
         }
     }
 
-    public void displayBookByTitle(String title) {
-        boolean found = false;
-        for(Book book : getLibrary().getBooks()) {
-            if(book.getAuthor().equalsIgnoreCase(title)) {
+    public void displayBooksByAuthor(String author, Library library) {
+        boolean isFound = false;
+
+        Collection<Book> books = library.getBooks().values();
+        for (Book book : books) {
+            if (book.getAuthor().equals(author)) {
                 System.out.println(book);
-                found = true;
+                isFound = true;
             }
         }
 
-        if (!found) {
-            System.out.println("No book found for Title: " + title);
+        if (!isFound) {
+            System.out.println("Given author " + author + " is not found");
         }
     }
 
-    public void displayBookByAuthor(String author) {
-        boolean found = false;
-        for(Book book : getLibrary().getBooks()) {
-            if(book.getAuthor().equalsIgnoreCase(author)) {
-                System.out.println(book);
-                found = true;
-            }
-        }
-
-        if (!found) {
-            System.out.println("No book found for Author: " + author);
-        }
-    }
-
-    public void displayBooksByCategory(){
+    public void displayBooksByCategory() {
         Category category;
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Please Select Category:  1: StudyBooks, 2: AudioBooks, 3: Mystery, 4: Magazine ");
+        System.out.println("Please Select Category:  1: StudyBooks, 2: Mystery, 3: Magazine ");
         String input = scanner.nextLine();
-        switch(input){
-            case "1" :
+        switch (input) {
+            case "1":
                 category = Category.STUDY_BOOK;
                 break;
-            case "2"  :
-                category = Category.AUDIO_BOOK;
-            case "3" :
+            case "2":
                 category = Category.MYSTERY;
-            case "4" :
+            case "3":
                 category = Category.MAGAZINE;
             default:
                 System.out.println("Invalid category");
                 return;
         }
         boolean found = false;
-        for(Book book: getLibrary().getBooks()){
-            if(book.getCategory().equals(category)){
-                System.out.println(book);
-                found =true;
-            }
-        }
-        if(!found){
+
+
+        if (!found) {
             System.out.println("No books found in Category");
         }
     }
-
-
 
 
 }
