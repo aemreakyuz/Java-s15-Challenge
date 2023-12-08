@@ -62,9 +62,7 @@ public class Library {
         System.out.println(book + " is added.");
     }
 
-    public void rentBook(Book book) {
-        books.remove(book.getBookId());
-    }
+
 
     public void rentBook(Book book, Member member) {
         if (member.getCurrentMoney() >= book.getPrice() && member.getInvoices().size()<5 && book.getBookStatus().equals(BookStatus.AVAILABLE)) {
@@ -86,10 +84,6 @@ public class Library {
         books.put(invoice.getBook().getBookId(), invoice.getBook());
     }
 
-
-    public Book getBookByID(long bookId) {
-        return books.get(bookId);
-    }
 
     public String toString() {
         return "Library{" +
